@@ -3,7 +3,10 @@ package it.polito.tdp.formulaone;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.formulaone.model.Archi;
 import it.polito.tdp.formulaone.model.Model;
+import it.polito.tdp.formulaone.model.Race;
+import it.polito.tdp.formulaone.model.Season;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -22,13 +25,13 @@ public class FormulaOneController {
     private URL location;
 
     @FXML // fx:id="boxAnno"
-    private ComboBox<?> boxAnno; // Value injected by FXMLLoader
+    private ComboBox<Season> boxAnno; // Value injected by FXMLLoader
 
     @FXML // fx:id="btnSelezionaStagione"
     private Button btnSelezionaStagione; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxGara"
-    private ComboBox<?> boxGara; // Value injected by FXMLLoader
+    private ComboBox<Race> boxGara; // Value injected by FXMLLoader
 
     @FXML // fx:id="btnSimulaGara"
     private Button btnSimulaGara; // Value injected by FXMLLoader
@@ -43,13 +46,22 @@ public class FormulaOneController {
     private TextArea txtResult; // Value injected by FXMLLoader
 
     @FXML
-    void doSelezionaStagione(ActionEvent event) {
-    	txtResult.setText("btn Seleziona stagione premuto");
+    void doSelezionaStagione(ActionEvent event) {	
+    	int anno= boxAnno.getValue().getYear();
+    	model.creaGrafo(anno);
+    	txtResult.clear();
+    	txtResult.appendText("\nNumero vertici: "+ model.getVertici().size());
+    	txtResult.appendText("\nNumero archi: "+ model.getNumeroArchi());
+    	for(Archi a: model.getPesoMassimo()) {
+    		txtResult.appendText("\n"+a.toString()+"\n");
+    	}
+    	boxGara.getItems().addAll(model.getVertici());
     }
 
     @FXML
     void doSimulaGara(ActionEvent event) {
-    	txtResult.setText("btn simula gara premuto");
+    
+
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
@@ -65,6 +77,7 @@ public class FormulaOneController {
 
 	public void setModel(Model model) {
 		this.model = model;
+		boxAnno.getItems().addAll(model.getSeason());
 		
 	}
 }
